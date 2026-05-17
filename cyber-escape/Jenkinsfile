@@ -1,25 +1,26 @@
 pipeline {
     agent any
-triggers {
-    githubPush()
-}
+
+    triggers {
+        githubPush()
+    }
 
     stages {
         stage('Install') {
             steps {
-                sh 'npm install'
+                bat 'npm install'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'npm run build'
+                bat 'npm run build'
             }
         }
 
         stage('Deploy') {
             steps {
-                sh 'firebase deploy --token $FIREBASE_TOKEN'
+                bat 'firebase deploy --token %FIREBASE_TOKEN%'
             }
         }
     }
