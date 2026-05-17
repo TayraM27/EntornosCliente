@@ -1,7 +1,7 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import CyberEscape from './components/CyberEscape.vue'
 </script>
 
 <template>
-  <HelloWorld />
+  <CyberEscape />
 </template>

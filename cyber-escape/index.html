@@ -1,13 +1,614 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>cyber-escape</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyber Escape</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:'Consolas','Courier New',monospace;
+  background:#000;
+  color:#00ff6a;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+body::after {
+  content:'';
+  position:fixed;
+  top:0;left:0;width:100%;height:100%;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.12)0px,rgba(0,0,0,.12)1px,transparent 1px,transparent 3px);
+  pointer-events:none;z-index:9999;
+}
+#app { max-width:780px; width:100%; }
+h1 {
+  font-size:1.6rem;margin-bottom:6px;letter-spacing:3px;text-transform:uppercase;
+  color:#00ff6a;text-shadow:0 0 10px rgba(0,255,106,.4);
+}
+.titulo-parpadeo { animation:flicker 2.5s ease-in-out infinite; }
+@keyframes flicker { 0%,100%{opacity:1} 33%{opacity:.82} 66%{opacity:.93} }
+.subtitulo { color:rgba(0,234,255,.5); font-size:.75rem; margin-bottom:18px; letter-spacing:2px; }
+.progress-bar {
+  display:flex;gap:8px;justify-content:center;margin-bottom:18px;
+}
+.progress-dot {
+  width:32px;height:32px;border:1px solid rgba(0,255,106,.25);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;color:rgba(0,255,106,.3);transition:all .3s;
+}
+.progress-dot.activo { border-color:#00eaff; color:#00eaff; box-shadow:0 0 6px rgba(0,234,255,.3); }
+.progress-dot.completado { border-color:#00ff6a; color:#00ff6a; background:rgba(0,255,106,.05); }
+.terminal-box {
+  border:1px solid rgba(0,255,106,.2);padding:24px;margin-bottom:16px;
+  position:relative;
+}
+.terminal-box::before {
+  content:'● ● ●';position:absolute;top:8px;right:12px;
+  color:rgba(0,255,106,.15);font-size:10px;letter-spacing:4px;
+}
+h2 { color:#00eaff; font-size:.95rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; }
+.console-line {
+  border-left:3px solid #00ff6a;padding-left:14px;margin-bottom:10px;
+  font-size:.9rem;min-height:1.4em;
+}
+.console-line.error { border-left-color:#ff0040; color:#ff0040; }
+.console-line.info { border-left-color:#00eaff; color:#00eaff; }
+.prompt { color:rgba(0,255,106,.7); font-size:.85rem; margin-bottom:8px; }
+.prompt::before { content:'> '; color:#00eaff; }
+.seccion { display:none; }
+.seccion.visible { display:block; }
+.puzzle-sec { display:none; }
+.puzzle-sec.visible { display:block; }
+input {
+  background:rgba(0,255,106,.04);color:#00ff6a;
+  border:1px solid rgba(0,255,106,.25);padding:8px 12px;
+  font-size:13px;font-family:'Consolas','Courier New',monospace;
+  outline:none;width:100%;max-width:320px;margin-bottom:10px;display:block;
+}
+input:focus { border-color:#00eaff; box-shadow:0 0 8px rgba(0,234,255,.15); }
+input::placeholder { color:rgba(0,255,106,.2); }
+button {
+  background:transparent;color:#00ff6a;
+  border:1px solid rgba(0,255,106,.3);padding:7px 16px;
+  font-size:12px;font-family:'Consolas','Courier New',monospace;
+  cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:1px;
+  margin-right:6px;margin-bottom:8px;
+}
+button:hover { background:rgba(0,255,106,.08); border-color:#00ff6a; box-shadow:0 0 10px rgba(0,255,106,.2); }
+button:disabled { opacity:.3; cursor:not-allowed; }
+button:disabled:hover { background:transparent; box-shadow:none; }
+.btn-hint { border-color:#00eaff; color:#00eaff; font-size:11px; }
+.btn-hint:hover { background:rgba(0,234,255,.12); box-shadow:0 0 8px rgba(0,234,255,.2); }
+.btn-volver { border-color:rgba(0,255,106,.4); color:rgba(0,255,106,.8); font-size:11px; }
+.btn-volver:hover { border-color:#00ff6a; color:#00ff6a; background:rgba(0,255,106,.08); }
+.btn-sgte { border-color:#00eaff; color:#00eaff; font-size:11px; }
+.btn-sgte:hover { background:rgba(0,234,255,.12); border-color:#00eaff; }
+code {
+  display:block;background:rgba(0,255,106,.04);padding:14px 16px;
+  border:1px solid rgba(0,255,106,.1);font-size:.85rem;
+  font-family:'Consolas','Courier New',monospace;color:rgba(0,255,106,.8);
+  text-align:left;margin-bottom:12px;white-space:pre-wrap;line-height:1.6;
+}
+code .hueco {
+  display:inline-block;border-bottom:2px solid #00eaff;
+  min-width:80px;color:#00eaff;
+}
+code .hueco input {
+  display:inline-block;background:transparent;border:none;border-bottom:1px solid #00eaff;
+  color:#00eaff;font-family:inherit;font-size:inherit;width:auto;min-width:60px;
+  padding:0 4px;margin:0;outline:none;
+}
+.sys-msg { font-size:.8rem; margin-bottom:12px; min-height:1.2em; }
+.loader {
+  width:22px;height:22px;border:2px solid rgba(0,234,255,.2);
+  border-top-color:#00eaff;border-radius:50%;
+  animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;margin-right:8px;
+}
+@keyframes spin { to{transform:rotate(360deg)} }
+
+/* Panel de pistas */
+.panel-pistas { margin-bottom:12px; }
+.btn-toggle-pistas {
+  background:rgba(0,234,255,.06); color:#00eaff; border:1px solid rgba(0,234,255,.25);
+  padding:5px 12px; font-size:11px; font-family:inherit; cursor:pointer;
+  text-transform:uppercase; letter-spacing:1px; width:100%; text-align:left;
+}
+.btn-toggle-pistas:hover { background:rgba(0,234,255,.12); border-color:#00eaff; }
+.pistas-contenido {
+  border:1px solid rgba(0,234,255,.15); border-top:none; padding:10px 14px;
+}
+.pistas-contenido p { margin:4px 0; font-size:.8rem; }
+
+/* Preview banner */
+.preview-banner {
+  padding:10px 16px; margin-bottom:12px;
+  border-color:#00eaff; background:rgba(0,234,255,.04);
+}
+.btn-continuar {
+  background:transparent; color:#00ff6a; border:1px solid #00ff6a;
+  padding:3px 12px; font-size:11px; font-family:inherit; cursor:pointer;
+  text-transform:uppercase; letter-spacing:1px; margin-left:12px;
+}
+.btn-continuar:hover { background:rgba(0,255,106,.1); }
+
+.nav-btns { margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; }
+
+/* glitch */
+@keyframes glitch-a {
+  0%,100%{transform:translate(0);clip-path:inset(0 0 0 0)}
+  10%{transform:translate(-3px,2px);clip-path:inset(20% 0 60% 0)}
+  20%{transform:translate(3px,-1px);clip-path:inset(40% 0 40% 0)}
+  30%{transform:translate(-2px,3px);clip-path:inset(10% 0 70% 0)}
+  40%{transform:translate(2px,-2px);clip-path:inset(60% 0 20% 0)}
+  50%{transform:translate(-3px,1px);clip-path:inset(30% 0 50% 0)}
+  60%{transform:translate(1px,-3px);clip-path:inset(0 0 80% 0)}
+  70%{transform:translate(-1px,2px);clip-path:inset(50% 0 30% 0)}
+  80%{transform:translate(3px,-2px);clip-path:inset(70% 0 10% 0)}
+  90%{transform:translate(-2px,1px);clip-path:inset(0 0 40% 0)}
+}
+.texto-glitch {
+  position:relative;display:inline-block;animation:glitch-a .8s infinite;
+  font-size:1.3rem;margin-top:6px;
+}
+.texto-glitch::before,.texto-glitch::after {
+  content:attr(data-text);position:absolute;top:0;left:0;
+  width:100%;height:100%;pointer-events:none;
+}
+.texto-glitch::before {
+  color:#00eaff;animation:glitch-a .8s infinite;
+  clip-path:inset(20% 0 50% 0);transform:translate(-2px,0);opacity:.7;
+}
+.texto-glitch::after {
+  color:#ff0040;animation:glitch-a .6s infinite reverse;
+  clip-path:inset(50% 0 20% 0);transform:translate(2px,0);opacity:.7;
+}
+#resultado-final { display:none; }
+</style>
+</head>
+<body>
+<div id="app">
+
+<h1 class="titulo-parpadeo">⏣ Cyber Escape</h1>
+<p class="subtitulo">[ SISTEMA DE SEGURIDAD — ACCESO RESTRINGIDO ]</p>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div id="sysMsg" class="sys-msg console-line info"></div>
+
+<!-- PANEL DE PISTAS -->
+<div id="panelPistas" class="panel-pistas" style="display:none;">
+  <button class="btn-toggle-pistas" id="btnTogglePistas" onclick="togglePanelPistas()">
+    ▶ Pistas desbloqueadas (0)
+  </button>
+  <div id="pistasContenido" class="pistas-contenido" style="display:none;"></div>
+</div>
+
+<!-- MODO REVISIÓN -->
+<div id="previewBanner" class="terminal-box preview-banner" style="display:none;">
+  <p class="console-line info" style="margin:0;">
+    Modo revisión — Puzzle <span id="previewNum"></span>
+    <button class="btn-continuar" onclick="continuar()">[ Continuar ]</button>
+  </p>
+</div>
+
+<!-- INTRO -->
+<div id="intro" class="terminal-box seccion visible">
+  <h2>⧩ ACCESO AL SISTEMA</h2>
+  <p class="prompt">Has sido detectado como una amenaza y confinado en un sistema de seguridad gubernamental de alto nivel. Los cortafuegos te mantienen atrapado.</p>
+  <p class="prompt">Para escapar, debes superar <strong>5 protocolos</strong> de seguridad. Cada nivel contiene pistas que te guiarán al siguiente.</p>
+  <p class="prompt">No hay margen de error. El sistema registra cada intento.</p>
+  <p class="console-line info">¿Estás listo para intentar la fuga?</p>
+  <button onclick="comenzar()">[ Acceder al sistema ]</button>
+</div>
+
+<!-- PUZZLE 1 -->
+<div id="puzzle1" class="terminal-box puzzle-sec">
+  <span id="3" style="display:none;">json</span>
+  <h2>⧩ Puzzle 1 — Nodo Oculto</h2>
+  <p class="prompt">Has accedido al primer módulo del sistema. Para continuar, identifica la técnica que usamos en clase para extraer información de páginas web.</p>
+  <p class="prompt">¿Cómo se llama la técnica usada para extraer información de páginas web?</p>
+  <input type="text" id="p1-input" placeholder="tu respuesta...">
+  <button onclick="verificarP1()">[ Verificar ]</button>
+  <div id="p1-result" class="console-line" style="margin-top:10px;"></div>
+  <div id="p1-pista" class="console-line hint-box" style="margin-top:6px;"></div>
+  <div class="nav-btns">
+    <button class="btn-sgte" onclick="siguiente(1)" style="display:none;">[ Siguiente → ]</button>
+  </div>
+</div>
+
+<!-- PUZZLE 2 -->
+<div id="puzzle2" class="terminal-box puzzle-sec">
+  <h2>⧩ Puzzle 2 — Completar .json()</h2>
+  <p class="prompt">Completa la palabra que falta. Recuerda lo que viste en el nodo del puzzle anterior.</p>
+  <code>fetch('puzzle2-data.json')<br>  .then(res =&gt; res.<span id="p2-hueco"><input type="text" id="p2-json" placeholder="completar"></span>)<br>  .then(data =&gt; console.log(data))</code>
+  <button onclick="verificarP2()">[ Validar ]</button>
+  <div id="p2-result" class="console-line" style="margin-top:8px;"></div>
+  <div id="p2-pista" class="console-line hint-box" style="margin-top:6px;"></div>
+  <div class="nav-btns">
+    <button class="btn-volver" onclick="volver()">[ ← Volver ]</button>
+    <button class="btn-sgte" onclick="siguiente(2)" style="display:none;">[ Siguiente → ]</button>
+  </div>
+</div>
+
+<!-- PUZZLE 3 -->
+<div id="puzzle3" class="terminal-box puzzle-sec">
+  <h2>⧩ Puzzle 3 — Petición al servidor</h2>
+  <p class="prompt">Elige el método HTTP correcto para obtener los datos del servidor:</p>
+  <p class="prompt" style="font-size:.8rem;color:rgba(0,255,106,.5);">Pista del nivel anterior: "Este método solo sirve para obtener información, no para modificarla."</p>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+    <button onclick="elegirMetodo('GET')" id="btnGET">GET</button>
+    <button onclick="elegirMetodo('POST')" id="btnPOST">POST</button>
+    <button onclick="elegirMetodo('PUT')" id="btnPUT">PUT</button>
+  </div>
+  <button id="p3-ejecutar" onclick="ejecutarP3()" disabled>[ Ejecutar ]</button>
+  <div id="p3-loader" style="display:none;margin:10px 0;"><span class="loader"></span> <span style="font-size:.8rem;">interceptando...</span></div>
+  <div id="p3-result" class="console-line" style="margin-top:8px;"></div>
+  <div id="p3-pista" class="console-line hint-box" style="margin-top:6px;"></div>
+  <div class="nav-btns">
+    <button class="btn-volver" onclick="volver()">[ ← Volver ]</button>
+    <button class="btn-sgte" onclick="siguiente(3)" style="display:none;">[ Siguiente → ]</button>
+  </div>
+</div>
+
+<!-- PUZZLE 4 -->
+<div id="puzzle4" class="terminal-box puzzle-sec">
+  <h2>⧩ Puzzle 4 — Cookie del sistema</h2>
+  <p class="prompt">Completa la línea de código usando la duración obtenida anteriormente (60 minutos).</p>
+  <code>document.cookie = "escape=true; max-age=<span class="hueco"><input type="text" id="p4-input" placeholder="completar"></span>";</code>
+  <button onclick="verificarP4()">[ Configurar ]</button>
+  <div id="p4-result" class="console-line" style="margin-top:8px;"></div>
+  <div id="p4-pista" class="console-line hint-box" style="margin-top:6px;"></div>
+  <div class="nav-btns">
+    <button class="btn-volver" onclick="volver()">[ ← Volver ]</button>
+    <button class="btn-sgte" onclick="siguiente(4)" style="display:none;">[ Siguiente → ]</button>
+  </div>
+</div>
+
+<!-- PUZZLE 5 -->
+<div id="puzzle5" class="terminal-box puzzle-sec">
+  <h2>⧩ Puzzle 5 — Pipeline de despliegue (CI/CD)</h2>
+  <p class="prompt">El sistema está preparado, pero el pipeline de despliegue está incompleto. Falta el paso clave.</p>
+  <code>stage('Deploy') {<br>    steps {<br>        sh '<span class="hueco"><input type="text" id="p5-input" placeholder="comando"></span>'<br>    }<br>}</code>
+  <button onclick="verificarP5()">[ Desplegar ]</button>
+  <div id="p5-result" class="console-line" style="margin-top:8px;"></div>
+  <div id="p5-pista" class="console-line hint-box" style="margin-top:6px;"></div>
+  <div class="nav-btns">
+    <button class="btn-volver" onclick="volver()">[ ← Volver ]</button>
+    <button class="btn-sgte" onclick="siguiente(5)" style="display:none;">[ Siguiente → ]</button>
+  </div>
+</div>
+
+<div id="resultado-final" class="terminal-box" style="text-align:center;">
+  <p class="console-line info">[OK] Cortafuegos desactivado</p>
+  <p class="console-line info">[OK] Sistema liberado</p>
+  <p class="console-line">[OK] Todos los niveles superados</p>
+  <h1 class="texto-glitch" data-text="Has escapado de Cyber Escape">Has escapado de Cyber Escape</h1>
+  <button onclick="reiniciar()" style="margin-top:14px;">[ Reiniciar ]</button>
+</div>
+
+</div>
+
+<script>
+// ── ESTADO ──
+const TOTAL = 5;
+const TEXTOS_PISTA = [
+  'La informaci\u00f3n importante no siempre est\u00e1 en pantalla. Ya sabes qu\u00e9 herramienta usamos para mirar m\u00e1s profundo.',
+  'Este m\u00e9todo solo sirve para obtener informaci\u00f3n, no para modificarla.',
+  'Si necesitas la informaci\u00f3n, ya sabes d\u00f3nde buscarla.',
+  'El sistema trabaja en segundos, no en minutos.',
+  'Solo falta el paso que libera el sistema.'
+];
+
+let progreso = JSON.parse(localStorage.getItem('ce-progreso-html') || '[]');
+let hintsUnlocked = JSON.parse(localStorage.getItem('ce-hints-html') || '[]');
+let vistaPrevia = 0;
+let p3Metodo = '';
+let p3Hecho = false;
+
+// ── GUARDAR ──
+function guardarProgreso() {
+  localStorage.setItem('ce-progreso-html', JSON.stringify(progreso));
+}
+function guardarHints() {
+  localStorage.setItem('ce-hints-html', JSON.stringify(hintsUnlocked));
+}
+
+// ── BARRA DE PROGRESO ──
+function pintarBarra() {
+  const bar = document.getElementById('progressBar');
+  bar.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'progress-dot';
+    if (progreso.includes(i)) d.classList.add('completado');
+    if (i === obtenerActual()) d.classList.add('activo');
+    d.textContent = i;
+    bar.appendChild(d);
+  }
+}
+
+function obtenerActual() {
+  if (vistaPrevia > 0) return vistaPrevia;
+  return progreso.length + 1;
+}
+
+// ── MOSTRAR SECCIÓN ──
+function mostrarSeccion(n) {
+  document.querySelectorAll('.puzzle-sec').forEach(el => el.classList.remove('visible'));
+  const todas = document.querySelectorAll('.puzzle-sec');
+  if (n >= 1 && n <= TOTAL) {
+    todas[n - 1].classList.add('visible');
+  }
+  // Preview banner
+  const banner = document.getElementById('previewBanner');
+  if (vistaPrevia > 0) {
+    banner.style.display = 'block';
+    document.getElementById('previewNum').textContent = vistaPrevia;
+  } else {
+    banner.style.display = 'none';
+  }
+  // Hints panel
+  actualizarPanelPistas();
+  pintarBarra();
+}
+
+// ── TYPEWRITER ──
+function typeWriter(el, text, speed, cb) {
+  speed = speed || 25;
+  let i = 0;
+  el.textContent = '';
+  el.style.display = 'block';
+  const t = setInterval(() => {
+    el.textContent += text[i];
+    i++;
+    if (i >= text.length) { clearInterval(t); if (cb) cb(); }
+  }, speed);
+}
+
+function sysMsg(text, cb) {
+  typeWriter(document.getElementById('sysMsg'), text, 25, cb);
+}
+
+// ── COMENZAR ──
+function comenzar() {
+  typeWriter(document.getElementById('sysMsg'), '[SISTEMA] Accediendo al sistema...', 25, () => {
+    document.getElementById('intro').classList.remove('visible');
+    mostrarSeccion(1);
+  });
+}
+
+// ── PISTAS ──
+function revelarPista(n) {
+  if (!hintsUnlocked.includes(n)) {
+    hintsUnlocked.push(n);
+    guardarHints();
+    actualizarPanelPistas();
+  }
+}
+
+function actualizarPanelPistas() {
+  const panel = document.getElementById('panelPistas');
+  const btn = document.getElementById('btnTogglePistas');
+  const contenido = document.getElementById('pistasContenido');
+  if (hintsUnlocked.length === 0) {
+    panel.style.display = 'none';
+    return;
+  }
+  panel.style.display = 'block';
+  btn.textContent = (contenido.style.display === 'none' ? '\u25B6' : '\u25BC') + ' Pistas desbloqueadas (' + hintsUnlocked.length + ')';
+  contenido.innerHTML = hintsUnlocked.sort((a,b)=>a-b).map(n =>
+    '<p class="console-line hint-box" style="margin:4px 0;font-size:.8rem;">Puzzle ' + n + ': ' + TEXTOS_PISTA[n - 1] + '</p>'
+  ).join('');
+}
+
+function togglePanelPistas() {
+  const contenido = document.getElementById('pistasContenido');
+  const btn = document.getElementById('btnTogglePistas');
+  const mostrar = contenido.style.display === 'none';
+  contenido.style.display = mostrar ? 'block' : 'none';
+  btn.textContent = (mostrar ? '\u25BC' : '\u25B6') + ' Pistas desbloqueadas (' + hintsUnlocked.length + ')';
+}
+
+// ── NAVEGACIÓN ──
+function volver() {
+  if (vistaPrevia > 0) {
+    if (vistaPrevia > 1) {
+      vistaPrevia--;
+    } else {
+      vistaPrevia = 0;
+    }
+  } else {
+    const act = progreso.length + 1;
+    if (act > 1) {
+      vistaPrevia = act - 1;
+      revelarPista(act - 1);
+    }
+  }
+  mostrarSeccion(obtenerActual());
+}
+
+function continuar() {
+  vistaPrevia = 0;
+  document.getElementById('pistasContenido').style.display = 'none';
+  mostrarSeccion(obtenerActual());
+}
+
+function siguiente(n) {
+  if (vistaPrevia > 0) {
+    continuar();
+    return;
+  }
+  completarPuzzle(n);
+}
+
+// ── COMPLETAR ──
+function completarPuzzle(id) {
+  if (!progreso.includes(id)) {
+    progreso.push(id);
+    guardarProgreso();
+    revelarPista(id);
+  }
+  vistaPrevia = 0;
+  const sig = progreso.length + 1;
+  if (sig > TOTAL) {
+    document.getElementById('resultado-final').style.display = 'block';
+    document.querySelectorAll('.seccion').forEach(el => el.style.display = 'none');
+    document.getElementById('previewBanner').style.display = 'none';
+    document.getElementById('panelPistas').style.display = 'none';
+    sysMsg('[SISTEMA] Todos los niveles superados. Desbloqueando salida...');
+  } else {
+    sysMsg('[SISTEMA] Puzzle ' + id + ' superado.', function() {
+      mostrarSeccion(sig);
+    });
+  }
+}
+
+// ── PUZZLE 1 ──
+function verificarP1() {
+  const r = document.getElementById('p1-input').value.trim().toLowerCase();
+  const rsl = document.getElementById('p1-result');
+  if (r === 'web scraping' || r === 'scraping') {
+    typeWriter(rsl, '[OK] Acceso concedido. C\u00f3digo: 003');
+    revelarPista(1);
+    typeWriter(document.getElementById('p1-pista'), TEXTOS_PISTA[0], 30);
+    revelarPista(2);
+    document.querySelector('#puzzle1 .btn-sgte').style.display = 'inline-block';
+  } else {
+    typeWriter(rsl, '[ERROR] Respuesta incorrecta.');
+  }
+}
+
+// ── PUZZLE 2 ──
+function verificarP2() {
+  const r = document.getElementById('p2-json').value.trim();
+  const rsl = document.getElementById('p2-result');
+  if (r === 'json') {
+    typeWriter(rsl, '[OK] Correcto.');
+    revelarPista(2);
+    document.querySelector('#puzzle2 .btn-sgte').style.display = 'inline-block';
+  } else {
+    typeWriter(rsl, '[ERROR] Palabra incorrecta. Revisa el nodo oculto del puzzle anterior.');
+  }
+}
+
+// ── PUZZLE 3 ──
+function elegirMetodo(m) {
+  p3Metodo = m;
+  document.getElementById('btnGET').classList.toggle('btn-selected', m === 'GET');
+  document.getElementById('btnPOST').classList.toggle('btn-selected', m === 'POST');
+  document.getElementById('btnPUT').classList.toggle('btn-selected', m === 'PUT');
+  document.getElementById('p3-ejecutar').disabled = false;
+}
+
+function ejecutarP3() {
+  const rsl = document.getElementById('p3-result');
+  if (p3Metodo !== 'GET') {
+    typeWriter(rsl, '[ERROR] M\u00e9todo incorrecto. Recuerda la pista del nivel anterior.');
+    return;
+  }
+  document.getElementById('p3-ejecutar').disabled = true;
+  document.getElementById('p3-loader').style.display = 'block';
+  rsl.textContent = '';
+
+  fetch('puzzle3-data.json')
+    .then(res => res.json())
+    .then(() => {
+      document.getElementById('p3-loader').style.display = 'none';
+      typeWriter(rsl, '[OK] Petici\u00f3n completada. Revisa la pesta\u00f1a Red del inspector para ver la respuesta.');
+      p3Hecho = true;
+      document.querySelector('#puzzle3 .btn-sgte').style.display = 'inline-block';
+    })
+    .catch(() => {
+      document.getElementById('p3-loader').style.display = 'none';
+      typeWriter(rsl, '[ERROR] No se pudo completar la petici\u00f3n.');
+      document.getElementById('p3-ejecutar').disabled = false;
+    });
+}
+
+// ── PUZZLE 4 ──
+function verificarP4() {
+  const r = document.getElementById('p4-input').value.trim();
+  const rsl = document.getElementById('p4-result');
+  if (r === '3600') {
+    typeWriter(rsl, '[OK] Cookie configurada. El sistema est\u00e1 casi listo.');
+    document.querySelector('#puzzle4 .btn-sgte').style.display = 'inline-block';
+  } else {
+    typeWriter(rsl, '[ERROR] Valor incorrecto. max-age debe ser 3600.');
+  }
+}
+
+// ── PUZZLE 5 ──
+function verificarP5() {
+  const r = document.getElementById('p5-input').value.trim().toLowerCase();
+  const rsl = document.getElementById('p5-result');
+  if (r === 'firebase deploy') {
+    typeWriter(rsl, '[OK] Despliegue iniciado.');
+    document.querySelector('#puzzle5 .btn-sgte').style.display = 'inline-block';
+  } else {
+    typeWriter(rsl, '[ERROR] Comando incorrecto.');
+  }
+}
+
+// ── REINICIAR ──
+function reiniciar() {
+  localStorage.removeItem('ce-progreso-html');
+  localStorage.removeItem('ce-hints-html');
+  progreso = [];
+  hintsUnlocked = [];
+  vistaPrevia = 0;
+  p3Metodo = '';
+  p3Hecho = false;
+  document.getElementById('resultado-final').style.display = 'none';
+  document.querySelectorAll('.puzzle-sec').forEach(el => { el.style.display = ''; el.classList.remove('visible'); });
+  document.getElementById('intro').classList.add('visible');
+  document.getElementById('previewBanner').style.display = 'none';
+  document.getElementById('panelPistas').style.display = 'none';
+  document.getElementById('pistasContenido').style.display = 'none';
+  document.querySelectorAll('.btn-sgte').forEach(el => el.style.display = 'none');
+  document.getElementById('p3-ejecutar').disabled = true;
+  document.getElementById('sysMsg').textContent = '';
+  // Limpiar inputs
+  document.getElementById('p1-input').value = '';
+  document.getElementById('p2-json').value = '';
+  document.getElementById('p4-input').value = '';
+  document.getElementById('p5-input').value = '';
+  document.getElementById('p1-result').textContent = '';
+  document.getElementById('p2-result').textContent = '';
+  document.getElementById('p3-result').textContent = '';
+  document.getElementById('p4-result').textContent = '';
+  document.getElementById('p5-result').textContent = '';
+  sysMsg('[SISTEMA] Sistema reiniciado. Inicia sesi\u00f3n para desbloquear.');
+  pintarBarra();
+}
+
+// ── INIT ──
+function init() {
+  if (progreso.length === 0) {
+    document.getElementById('intro').classList.add('visible');
+    sysMsg('[SISTEMA] Inicia sesi\u00f3n para desbloquear el sistema.');
+  } else {
+    document.getElementById('intro').classList.remove('visible');
+    mostrarSeccion(progreso.length + 1);
+    sysMsg('[SISTEMA] Progreso: ' + progreso.length + '/' + TOTAL + ' niveles superados.');
+  }
+  // Estado puzzle3 si ya resuelto
+  if (progreso.includes(3)) {
+    document.getElementById('p3-ejecutar').disabled = true;
+  }
+  // Mostrar botones Siguiente si ya resueltos
+  progreso.forEach(id => {
+    const btn = document.querySelector('#puzzle' + id + ' .btn-sgte');
+    if (btn) btn.style.display = 'inline-block';
+  });
+  pintarBarra();
+}
+
+init();
+</script>
+
+<script type="module" src="/src/main.js"></script>
+</body>
 </html>

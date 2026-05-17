@@ -1,34 +1,44 @@
- const input = document.getElementById("input-numero");
+function typeWriter(el, text, speed = 25, cb) {
+  let i = 0;
+  el.textContent = '';
+  const timer = setInterval(() => {
+    el.textContent += text[i];
+    i++;
+    if (i >= text.length) {
+      clearInterval(timer);
+      if (cb) cb();
+    }
+  }, speed);
+}
+
+const input = document.getElementById("input-numero");
 const btn = document.getElementById("btn-validar");
 const resultado = document.getElementById("resultado");
 
-// Función que simula un servidor con una Promesa
 function comprobarNumero(numeroUsuario) {
   return new Promise((resolve, reject) => {
     setTimeout(async () => {
       try {
-        const res = await fetch("/puzzle4-data.json");
+        const res = await fetch("../../../public/puzzle4-data.json");
         const data = await res.json();
 
         if (numeroUsuario === data.numeroCorrecto) {
-          resolve("¡Correcto! Has desbloqueado el nivel.");
+          window.parent.postMessage({ tipo: 'puzzle-completado', puzzle: 4 }, '*');
+          resolve("[OK] ¡Correcto! Has desbloqueado el nivel.");
         } else {
-          resolve("Número incorrecto. Inténtalo de nuevo.");
+          resolve("[ERROR] Número incorrecto. Inténtalo de nuevo.");
         }
       } catch (error) {
-        reject("Error al cargar los datos");
+        reject("[ERROR] Error al cargar los datos");
       }
-    }, 1000); // simula retardo de 1 segundo
+    }, 1000);
   });
 }
 
 btn.addEventListener("click", () => {
   const numero = parseInt(input.value);
-
-  resultado.textContent = "Comprobando...";
-
+  typeWriter(resultado, "Comprobando...");
   comprobarNumero(numero)
-    .then(msg => resultado.textContent = msg)
-    .catch(err => resultado.textContent = err);
+    .then(msg => typeWriter(resultado, msg))
+    .catch(err => typeWriter(resultado, err));
 });
-

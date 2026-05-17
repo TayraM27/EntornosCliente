@@ -1,8 +1,31 @@
- 
-<h2>Puzzle 3 — Async / Await</h2>
-
-<button id="btn-cargar">Obtener clave</button>
-
-<p id="resultado"></p>
-
-<script src="./puzzle3.js"></script>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Puzzle 3 — Async / Await</title>
+  <link rel="stylesheet" href="../../../styles.css" />
+  <style>
+    body { min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+    .contenedor { max-width: 520px; }
+    h2 { font-size: 1.2rem; color: #00eaff; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; text-align: center; }
+    .instrucciones { text-align: left; margin-bottom: 20px; font-size: 0.9rem; color: rgba(0,255,106,0.8); border: 1px solid rgba(0,255,106,0.15); padding: 14px 18px; }
+    .acciones { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+    #resultado { margin-top: 16px; font-size: 0.95rem; min-height: 1.5em; color: #00ff6a; }
+  </style>
+</head>
+<body>
+  <div class="contenedor terminal">
+    <h2 class="titulo-parpadeo">⧩ Puzzle 3 — Async / Await</h2>
+    <div class="instrucciones">
+      <p>Haz una petición a la API y analiza la respuesta. Introduce el valor correcto para avanzar.</p>
+    </div>
+    <div class="acciones">
+      <button onclick="window.location.href='../../../index.html'">[ Volver ]</button>
+      <button onclick="window.location.href='../puzzle4/puzzle4.html'">[ Siguiente → ]</button>
+    </div>
+    <button id="btn-cargar">[ Obtener clave ]</button>
+    <p id="resultado" class="console-line"></p>
+  </div>
+  <script src="./puzzle3.js"></script>
+</body>
+</html>

@@ -1,8 +1,52 @@
-<h2>Puzzle 1 — Código Secreto</h2>
-
-<button id="btn-cargar">Cargar código</button>
-
-<p id="resultado"></p>
-
-<script src="./puzzle1.js"></script>
- 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Puzzle 1 — Código Secreto</title>
+  <link rel="stylesheet" href="../../../styles.css" />
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .contenedor { max-width: 520px; }
+    h2 { font-size: 1.2rem; color: #00eaff; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; text-align: center; }
+    .instrucciones { text-align: left; margin-bottom: 20px; font-size: 0.9rem; color: rgba(0,255,106,0.8); border: 1px solid rgba(0,255,106,0.15); padding: 14px 18px; }
+    .acciones { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+    #pregunta-accesso input { width: 100%; max-width: 280px; margin-bottom: 10px; }
+    #pregunta-acceso { margin-bottom: 16px; }
+    #pregunta-acceso p { margin-bottom: 10px; color: rgba(0,255,106,0.8); font-size: 0.9rem; }
+    #resultado { margin-top: 16px; font-size: 0.95rem; min-height: 1.5em; color: #00ff6a; }
+    #pistaInspeccion { font-size: 0.85rem; color: rgba(0,234,255,0.6); border-color: rgba(0,234,255,0.2); margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="contenedor terminal">
+    <h2 class="titulo-parpadeo">⧩ Puzzle 1 — Código Secreto</h2>
+    <div class="instrucciones">
+      <p>El sistema ha bloqueado el acceso inicial. Para obtener el código que te ayudará en el siguiente nivel, primero debes demostrar tus conocimientos básicos de análisis web.</p>
+      <p>Responde correctamente la pregunta para desbloquear el acceso al código.</p>
+    </div>
+    <div class="acciones">
+      <button onclick="window.location.href='../../../index.html'">[ Volver ]</button>
+      <button onclick="window.location.href='../puzzle2/puzzle2.html'">[ Siguiente → ]</button>
+    </div>
+    <div id="pregunta-acceso">
+      <p class="prompt">¿Cómo se llama la técnica que permite obtener información de una página web analizando su estructura HTML?</p>
+      <input type="text" id="respuestaUsuario" placeholder="Escribe tu respuesta...">
+      <button id="btnVerificar">[ Verificar ]</button>
+      <p id="mensajeVerificacion" style="color:#ff0040; display:none;" class="console-line error">[ERROR] Respuesta incorrecta.</p>
+    </div>
+    <button id="btnCargarCodigo" style="display:none;">[ Cargar código ]</button>
+    <p class="instrucciones" id="pistaInspeccion" style="display:none;">
+      Pista: recuerda la herramienta que usamos en clase para analizar páginas cuando hacemos las tareas.
+    </p>
+    <p id="resultado" class="console-line"></p>
+    <span id="3" style="display:none;">secret key</span>
+  </div>
+  <script src="./puzzle1.js"></script>
+</body>
+</html>
