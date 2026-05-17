@@ -1,0 +1,194 @@
+/* === CRT Terminal Theme — Cyber Escape === */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Consolas', 'Courier New', monospace;
+  background: #000;
+  color: #00ff6a;
+  line-height: 1.6;
+}
+
+/* CRT scanlines */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.12) 0px,
+    rgba(0, 0, 0, 0.12) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+button {
+  background: transparent;
+  color: #00ff6a;
+  border: 1px solid #00ff6a;
+  padding: 8px 18px;
+  font-size: 14px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+button:hover {
+  background: rgba(0, 255, 106, 0.1);
+  box-shadow: 0 0 12px rgba(0, 255, 106, 0.3);
+}
+
+button:active {
+  background: rgba(0, 255, 106, 0.2);
+}
+
+.contenedor {
+  background: rgba(0, 255, 106, 0.03);
+  border: 1px solid rgba(0, 255, 106, 0.2);
+  padding: 30px;
+  max-width: 540px;
+  width: 100%;
+  text-align: center;
+}
+
+input {
+  background: rgba(0, 255, 106, 0.05);
+  color: #00ff6a;
+  border: 1px solid rgba(0, 255, 106, 0.3);
+  padding: 8px 12px;
+  font-size: 14px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus {
+  border-color: #00eaff;
+  box-shadow: 0 0 8px rgba(0, 234, 255, 0.2);
+}
+
+input::placeholder {
+  color: rgba(0, 255, 106, 0.3);
+}
+
+/* Title flicker */
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  33% { opacity: 0.85; }
+  66% { opacity: 0.95; }
+}
+.titulo-parpadeo {
+  animation: flicker 2s ease-in-out infinite;
+}
+
+/* Glitch effect */
+@keyframes glitch-1 {
+  0%, 100% { transform: translate(0); clip-path: inset(0 0 0 0); }
+  10% { transform: translate(-3px, 2px); clip-path: inset(20% 0 60% 0); }
+  20% { transform: translate(3px, -1px); clip-path: inset(40% 0 40% 0); }
+  30% { transform: translate(-2px, 3px); clip-path: inset(10% 0 70% 0); }
+  40% { transform: translate(2px, -2px); clip-path: inset(60% 0 20% 0); }
+  50% { transform: translate(-3px, 1px); clip-path: inset(30% 0 50% 0); }
+  60% { transform: translate(1px, -3px); clip-path: inset(0 0 80% 0); }
+  70% { transform: translate(-1px, 2px); clip-path: inset(50% 0 30% 0); }
+  80% { transform: translate(3px, -2px); clip-path: inset(70% 0 10% 0); }
+  90% { transform: translate(-2px, 1px); clip-path: inset(0 0 40% 0); }
+}
+.texto-glitch {
+  position: relative;
+  display: inline-block;
+  animation: glitch-1 0.8s infinite;
+}
+.texto-glitch::before,
+.texto-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.texto-glitch::before {
+  color: #00eaff;
+  animation: glitch-1 0.8s infinite;
+  clip-path: inset(20% 0 50% 0);
+  transform: translate(-2px, 0);
+  opacity: 0.7;
+}
+.texto-glitch::after {
+  color: #ff0040;
+  animation: glitch-1 0.6s infinite reverse;
+  clip-path: inset(50% 0 20% 0);
+  transform: translate(2px, 0);
+  opacity: 0.7;
+}
+
+/* Loader */
+.loader {
+  width: 25px;
+  height: 25px;
+  border: 2px solid rgba(0, 234, 255, 0.2);
+  border-top-color: #00eaff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Console line */
+.console-line {
+  border-left: 3px solid #00ff6a;
+  padding-left: 14px;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.console-line.error {
+  border-left-color: #ff0040;
+  color: #ff0040;
+}
+
+.console-line.info {
+  border-left-color: #00eaff;
+  color: #00eaff;
+}
+
+/* Prompt line */
+.prompt {
+  color: #00ff6a;
+}
+.prompt::before {
+  content: '> ';
+  color: #00eaff;
+}
+
+/* Terminal window look */
+.terminal {
+  border: 1px solid rgba(0, 255, 106, 0.3);
+  padding: 24px;
+  position: relative;
+}
+.terminal::before {
+  content: '● ● ●';
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  color: rgba(0, 255, 106, 0.2);
+  font-size: 10px;
+  letter-spacing: 4px;
+}

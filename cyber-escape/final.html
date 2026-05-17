@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cyber Escape — Completado</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .contenedor {
+      max-width: 600px;
+      padding: 40px;
+    }
+    .texto-glitch {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    p {
+      font-size: 1rem;
+      color: rgba(0, 255, 106, 0.8);
+      margin-bottom: 12px;
+    }
+    button {
+      margin-top: 20px;
+      font-size: 14px;
+      padding: 10px 24px;
+    }
+    .prompt-blink {
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="contenedor terminal">
+    <p class="console-line info">[SISTEMA] Cortafuegos desactivado</p>
+    <p class="console-line info">[SISTEMA] Acceso restaurado</p>
+    <p class="console-line">[OK] Todos los niveles superados</p>
+    <h1 class="texto-glitch" data-text="Has escapado de Cyber Escape">Has escapado de Cyber Escape</h1>
+    <p class="prompt">Felicidades, has recuperado el control del sistema.</p>
+    <p class="prompt">Puedes volver al menú para repetir cualquier puzzle.</p>
+    <button onclick="window.location.href='index.html'">[ Volver al menú ]</button>
+    <p class="prompt" style="margin-top:24px;color:rgba(0,255,106,0.4);font-size:0.85rem;">
+      _<span class="prompt-blink">▌</span>
+    </p>
+  </div>
+</body>
+</html>

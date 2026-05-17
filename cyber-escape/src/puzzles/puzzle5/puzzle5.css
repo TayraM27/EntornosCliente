@@ -1,0 +1,17 @@
+ h2 {
+  color: #333;
+}
+
+button {
+  padding: 10px;
+  background: #ff9800;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#resultado {
+  margin-top: 15px;
+  font-weight: bold;
+}
+

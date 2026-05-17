@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Puzzle 4 — Promesas y lógica de juego</title>
+  <title>Puzzle 5 — Cuenta atrás</title>
   <link rel="stylesheet" href="../../../styles.css" />
   <style>
     body { min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
@@ -10,24 +10,26 @@
     h2 { font-size: 1.2rem; color: #00eaff; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; text-align: center; }
     .instrucciones { text-align: left; margin-bottom: 20px; font-size: 0.9rem; color: rgba(0,255,106,0.8); border: 1px solid rgba(0,255,106,0.15); padding: 14px 18px; }
     .acciones { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
-    input { width: 100%; max-width: 200px; margin-bottom: 10px; }
+    p { font-size: 1rem; color: rgba(0,255,106,0.8); margin-bottom: 14px; }
+    #tiempo { font-weight: bold; font-size: 2rem; color: #00eaff; }
+    #tiempo.peligro { color: #ff0040; }
     #resultado { margin-top: 16px; font-size: 0.95rem; min-height: 1.5em; color: #00ff6a; }
   </style>
 </head>
 <body>
   <div class="contenedor terminal">
-    <h2 class="titulo-parpadeo">⧩ Puzzle 4 — Promesas y lógica de juego</h2>
+    <h2 class="titulo-parpadeo">⧩ Puzzle 5 — Cuenta atrás</h2>
     <div class="instrucciones">
-      <p>Introduce el número correcto. El sistema validará tu respuesta de forma asíncrona.</p>
+      <p>Tienes 10 segundos para pulsar el botón antes de que el tiempo llegue a cero.</p>
     </div>
     <div class="acciones">
       <button onclick="window.location.href='../../../index.html'">[ Volver ]</button>
-      <button onclick="window.location.href='../puzzle5/puzzle5.html'">[ Siguiente → ]</button>
     </div>
-    <input id="input-numero" type="number" placeholder="Adivina el número (1-10)">
-    <button id="btn-validar">[ Comprobar ]</button>
+    <p class="prompt">Tiempo restante: <span id="tiempo">10</span> segundos</p>
+    <button id="btn-detener">[ Detener temporizador ]</button>
     <p id="resultado" class="console-line"></p>
+    <button onclick="window.location.href='../../../final.html'">[ Finalizar Escape Room ]</button>
   </div>
-  <script src="./puzzle4.js"></script>
+  <script src="./puzzle5.js"></script>
 </body>
 </html>
