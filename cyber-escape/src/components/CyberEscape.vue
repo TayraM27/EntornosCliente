@@ -60,7 +60,7 @@
 
       <!-- PUZZLE 2 -->
       <div v-else-if="actual === 2" key="p2" class="terminal-box">
-        <h2>⧩ Puzzle 2 — Completar .json()</h2>
+        <h2>⧩ Puzzle 2 — Completar</h2>
         <p class="prompt">Completa la palabra que falta. Recuerda lo que viste en el nodo del puzzle anterior.</p>
         <code>fetch('puzzle2-data.json')<br />&nbsp;&nbsp;.then(res =&gt; res.<span class="hueco">{{ p2Json || '?' }}</span>())<br />&nbsp;&nbsp;.then(data =&gt; console.log(data))</code>
         <input v-model="p2Json" placeholder="completar" @keyup.enter="verificarP2" />
@@ -76,8 +76,7 @@
       <!-- PUZZLE 3 -->
       <div v-else-if="actual === 3" key="p3" class="terminal-box">
         <h2>⧩ Puzzle 3 — Petici&oacute;n al servidor</h2>
-        <p class="prompt">Elige el m&eacute;todo HTTP correcto para obtener los datos del servidor:</p>
-        <p class="prompt" style="font-size:.8rem;color:rgba(0,255,106,.5);">Pista del nivel anterior: "Este m&eacute;todo solo sirve para obtener informaci&oacute;n, no para modificarla."</p>
+        <p class="prompt">Elige el m&eacute;todo HTTP correcto:</p>
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
           <button @click="elegirMetodo('GET')" :class="{ 'btn-selected': p3Metodo === 'GET' }">GET</button>
           <button @click="elegirMetodo('POST')" :class="{ 'btn-selected': p3Metodo === 'POST' }">POST</button>
@@ -111,7 +110,7 @@
         <h2>⧩ Puzzle 5 — Pipeline de despliegue (CI/CD)</h2>
         <p class="prompt">El sistema est&aacute; preparado, pero el pipeline de despliegue est&aacute; incompleto. Falta el paso clave.</p>
         <code>stage('Deploy') &#123;<br />&nbsp;&nbsp;&nbsp;&nbsp;steps &#123;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sh '<span class="hueco">{{ p5Input || '?' }}</span>'<br />&nbsp;&nbsp;&nbsp;&nbsp;&#125;<br />&#125;</code>
-        <input v-model="p5Input" placeholder="comando" @keyup.enter="verificarP5" />
+        <input v-model="p5Input" placeholder="______ ______" @keyup.enter="verificarP5" />
         <button @click="verificarP5">[ Desplegar ]</button>
         <p class="console-line" ref="p5Result" style="margin-top:8px;"></p>
         <div class="nav-btns">
@@ -126,7 +125,7 @@
         <p class="console-line info">[OK] Sistema liberado</p>
         <p class="console-line">[OK] Todos los niveles superados</p>
         <h1 class="texto-glitch" data-text="Has escapado de Cyber Escape">Has escapado de Cyber Escape</h1>
-        <button @click="reiniciar" style="margin-top:14px;">[ Reiniciar ]</button>
+        <button @click="reiniciar" style="margin-top:14px;display:block;margin-left:auto;margin-right:auto;">[ Reiniciar ]</button>
       </div>
     </Transition>
   </div>

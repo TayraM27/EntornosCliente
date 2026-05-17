@@ -221,7 +221,7 @@ code .hueco input {
 
 <!-- PUZZLE 2 -->
 <div id="puzzle2" class="terminal-box puzzle-sec">
-  <h2>⧩ Puzzle 2 — Completar .json()</h2>
+  <h2>⧩ Puzzle 2 — Completar</h2>
   <p class="prompt">Completa la palabra que falta. Recuerda lo que viste en el nodo del puzzle anterior.</p>
   <code>fetch('puzzle2-data.json')<br>  .then(res =&gt; res.<span id="p2-hueco"><input type="text" id="p2-json" placeholder="completar"></span>)<br>  .then(data =&gt; console.log(data))</code>
   <button onclick="verificarP2()">[ Validar ]</button>
@@ -236,8 +236,7 @@ code .hueco input {
 <!-- PUZZLE 3 -->
 <div id="puzzle3" class="terminal-box puzzle-sec">
   <h2>⧩ Puzzle 3 — Petición al servidor</h2>
-  <p class="prompt">Elige el método HTTP correcto para obtener los datos del servidor:</p>
-  <p class="prompt" style="font-size:.8rem;color:rgba(0,255,106,.5);">Pista del nivel anterior: "Este método solo sirve para obtener información, no para modificarla."</p>
+  <p class="prompt">Elige el método HTTP correcto:</p>
   <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
     <button onclick="elegirMetodo('GET')" id="btnGET">GET</button>
     <button onclick="elegirMetodo('POST')" id="btnPOST">POST</button>
@@ -271,7 +270,7 @@ code .hueco input {
 <div id="puzzle5" class="terminal-box puzzle-sec">
   <h2>⧩ Puzzle 5 — Pipeline de despliegue (CI/CD)</h2>
   <p class="prompt">El sistema está preparado, pero el pipeline de despliegue está incompleto. Falta el paso clave.</p>
-  <code>stage('Deploy') {<br>    steps {<br>        sh '<span class="hueco"><input type="text" id="p5-input" placeholder="comando"></span>'<br>    }<br>}</code>
+  <code>stage('Deploy') {<br>    steps {<br>        sh '<span class="hueco"><input type="text" id="p5-input" placeholder="______ ______"></span>'<br>    }<br>}</code>
   <button onclick="verificarP5()">[ Desplegar ]</button>
   <div id="p5-result" class="console-line" style="margin-top:8px;"></div>
   <div id="p5-pista" class="console-line hint-box" style="margin-top:6px;"></div>
@@ -286,7 +285,7 @@ code .hueco input {
   <p class="console-line info">[OK] Sistema liberado</p>
   <p class="console-line">[OK] Todos los niveles superados</p>
   <h1 class="texto-glitch" data-text="Has escapado de Cyber Escape">Has escapado de Cyber Escape</h1>
-  <button onclick="reiniciar()" style="margin-top:14px;">[ Reiniciar ]</button>
+  <button onclick="reiniciar()" style="margin-top:14px;display:block;margin-left:auto;margin-right:auto;">[ Reiniciar ]</button>
 </div>
 
 </div>
