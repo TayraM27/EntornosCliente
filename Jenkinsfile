@@ -8,19 +8,25 @@ pipeline {
     stages {
         stage('Install') {
             steps {
-                bat 'npm install'
+                dir('cyber-escape') {
+                    bat 'npm install'
+                }
             }
         }
 
         stage('Build') {
             steps {
-                bat 'npm run build'
+                dir('cyber-escape') {
+                    bat 'npm run build'
+                }
             }
         }
 
         stage('Deploy') {
             steps {
-                bat 'firebase deploy --token %FIREBASE_TOKEN%'
+                dir('cyber-escape') {
+                    bat 'firebase deploy --token %FIREBASE_TOKEN%'
+                }
             }
         }
     }
